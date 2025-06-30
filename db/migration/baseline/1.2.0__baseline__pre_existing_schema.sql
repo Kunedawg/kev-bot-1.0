@@ -180,7 +180,7 @@ CREATE TABLE `player_info` (
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`doadmin`@`%` PROCEDURE `add_audio`(IN discord_id VARCHAR(45), IN audio_name VARCHAR(45), IN duration FLOAT, OUT return_message VARCHAR(100))
+CREATE PROCEDURE `add_audio`(IN discord_id VARCHAR(45), IN audio_name VARCHAR(45), IN duration FLOAT, OUT return_message VARCHAR(100))
 sp: BEGIN
 	DECLARE audio_name_look_up VARCHAR(45);
 
@@ -219,7 +219,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`doadmin`@`%` PROCEDURE `add_audio_category`(IN discord_id VARCHAR(45), IN audio_name VARCHAR(45), IN category_name VARCHAR(45), OUT return_message VARCHAR(100))
+CREATE PROCEDURE `add_audio_category`(IN discord_id VARCHAR(45), IN audio_name VARCHAR(45), IN category_name VARCHAR(45), OUT return_message VARCHAR(100))
 sp: BEGIN
 	DECLARE audio_category_id_look_up VARCHAR(45);
 
@@ -270,7 +270,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`doadmin`@`%` PROCEDURE `add_category`(IN discord_id VARCHAR(45), IN category_name VARCHAR(45), OUT return_message VARCHAR(100))
+CREATE PROCEDURE `add_category`(IN discord_id VARCHAR(45), IN category_name VARCHAR(45), OUT return_message VARCHAR(100))
 sp: BEGIN
 	DECLARE category_name_look_up VARCHAR(45);
 
@@ -309,7 +309,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`doadmin`@`%` PROCEDURE `add_new_player`(IN discord_id VARCHAR(45), OUT return_message VARCHAR(100))
+CREATE PROCEDURE `add_new_player`(IN discord_id VARCHAR(45), OUT return_message VARCHAR(100))
 BEGIN
 	DECLARE player_id INT;
     
@@ -348,7 +348,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`doadmin`@`%` PROCEDURE `del_audio`(IN audio_name VARCHAR(45), OUT return_message VARCHAR(100))
+CREATE PROCEDURE `del_audio`(IN audio_name VARCHAR(45), OUT return_message VARCHAR(100))
 BEGIN
 	DECLARE audio_name_look_up VARCHAR(45);
 	
@@ -381,7 +381,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`doadmin`@`%` PROCEDURE `del_audio_category`(IN audio_name VARCHAR(45), IN category_name VARCHAR(45), OUT return_message VARCHAR(100))
+CREATE PROCEDURE `del_audio_category`(IN audio_name VARCHAR(45), IN category_name VARCHAR(45), OUT return_message VARCHAR(100))
 sp: BEGIN
 	DECLARE audio_category_id_look_up VARCHAR(45);
 
@@ -426,7 +426,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`doadmin`@`%` PROCEDURE `del_category`(IN category_name VARCHAR(45), OUT return_message VARCHAR(100))
+CREATE PROCEDURE `del_category`(IN category_name VARCHAR(45), OUT return_message VARCHAR(100))
 BEGIN
 	DECLARE category_name_look_up  VARCHAR(45);
 	
@@ -459,7 +459,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,STRICT_ALL_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,TRADITIONAL,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`doadmin`@`%` PROCEDURE `del_farewell`(IN discord_id VARCHAR(45), OUT return_message VARCHAR(100))
+CREATE PROCEDURE `del_farewell`(IN discord_id VARCHAR(45), OUT return_message VARCHAR(100))
 BEGIN
 	DECLARE player_id INT;
 	
@@ -500,7 +500,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`doadmin`@`%` PROCEDURE `del_greeting`(IN discord_id VARCHAR(45), OUT return_message VARCHAR(100))
+CREATE PROCEDURE `del_greeting`(IN discord_id VARCHAR(45), OUT return_message VARCHAR(100))
 BEGIN
 	DECLARE player_id INT;
 	
@@ -541,7 +541,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`doadmin`@`%` PROCEDURE `get_audio_id`(IN audio_name VARCHAR(45), OUT audio_id INT, OUT return_message VARCHAR(100))
+CREATE PROCEDURE `get_audio_id`(IN audio_name VARCHAR(45), OUT audio_id INT, OUT return_message VARCHAR(100))
 sp: BEGIN
 	SELECT audio.audio_id 
     INTO audio_id
@@ -569,7 +569,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`doadmin`@`%` PROCEDURE `get_category_id`(IN category_name VARCHAR(45), OUT category_id INT, OUT return_message VARCHAR(100))
+CREATE PROCEDURE `get_category_id`(IN category_name VARCHAR(45), OUT category_id INT, OUT return_message VARCHAR(100))
 sp: BEGIN
 	SELECT categories.category_id 
     INTO category_id
@@ -597,7 +597,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,STRICT_ALL_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,TRADITIONAL,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`doadmin`@`%` PROCEDURE `get_farewell`(IN discord_id VARCHAR(45), OUT farewell VARCHAR(100))
+CREATE PROCEDURE `get_farewell`(IN discord_id VARCHAR(45), OUT farewell VARCHAR(100))
 BEGIN
 	SELECT player_farewells.farewell
 	INTO farewell
@@ -623,7 +623,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,STRICT_ALL_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,TRADITIONAL,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`doadmin`@`%` PROCEDURE `get_greeting`(IN discord_id VARCHAR(45), OUT greeting VARCHAR(100), OUT greeting_type INT)
+CREATE PROCEDURE `get_greeting`(IN discord_id VARCHAR(45), OUT greeting VARCHAR(100), OUT greeting_type INT)
 BEGIN
 	SELECT player_greetings.greeting, player_greetings.greeting_type
 	INTO greeting, greeting_type
@@ -649,7 +649,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`doadmin`@`%` PROCEDURE `get_player_id`(IN discord_id VARCHAR(45), OUT player_id INT, OUT return_message VARCHAR(100))
+CREATE PROCEDURE `get_player_id`(IN discord_id VARCHAR(45), OUT player_id INT, OUT return_message VARCHAR(100))
 sp: BEGIN
 	SELECT player_info.player_id 
     INTO player_id
@@ -690,7 +690,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`doadmin`@`%` PROCEDURE `log_audio_play`(IN discord_id VARCHAR(45), IN audio_name VARCHAR(45), IN play_type INT(11), OUT return_message VARCHAR(100))
+CREATE PROCEDURE `log_audio_play`(IN discord_id VARCHAR(45), IN audio_name VARCHAR(45), IN play_type INT(11), OUT return_message VARCHAR(100))
 sp: BEGIN
 	DECLARE audio_category_id_look_up VARCHAR(45);
 
@@ -725,7 +725,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`doadmin`@`%` PROCEDURE `log_category_play`(IN discord_id VARCHAR(45), IN category_name VARCHAR(45), OUT return_message VARCHAR(100))
+CREATE PROCEDURE `log_category_play`(IN discord_id VARCHAR(45), IN category_name VARCHAR(45), OUT return_message VARCHAR(100))
 sp: BEGIN
 	DECLARE audio_category_id_look_up VARCHAR(45);
 
@@ -760,7 +760,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,STRICT_ALL_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,TRADITIONAL,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`doadmin`@`%` PROCEDURE `set_farewell`(IN discord_id VARCHAR(45), IN farewell VARCHAR(100), OUT return_message VARCHAR(100))
+CREATE PROCEDURE `set_farewell`(IN discord_id VARCHAR(45), IN farewell VARCHAR(100), OUT return_message VARCHAR(100))
 sp: BEGIN
 	DECLARE player_id INT;
     DECLARE farewell_id INT;
@@ -823,7 +823,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,STRICT_ALL_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,TRADITIONAL,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`doadmin`@`%` PROCEDURE `set_greeting`(IN discord_id VARCHAR(45), IN greeting VARCHAR(100), IN greeting_type INT, OUT return_message VARCHAR(100))
+CREATE PROCEDURE `set_greeting`(IN discord_id VARCHAR(45), IN greeting VARCHAR(100), IN greeting_type INT, OUT return_message VARCHAR(100))
 sp: BEGIN
 	
 	DECLARE player_id INT;
@@ -893,7 +893,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`doadmin`@`%` PROCEDURE `update_discord_user_name`(IN discord_id VARCHAR(45), IN discord_user_name VARCHAR(45), OUT return_message VARCHAR(100))
+CREATE PROCEDURE `update_discord_user_name`(IN discord_id VARCHAR(45), IN discord_user_name VARCHAR(45), OUT return_message VARCHAR(100))
 sp: BEGIN
 
 	CALL get_player_id(discord_id, @player_id, @return_message);
