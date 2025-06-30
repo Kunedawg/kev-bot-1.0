@@ -15,7 +15,7 @@
 6. Start local versions of the `db` and `gcloud` storage by running:
 
    ```sh
-   docker compose --env-file .env -f docker-compose.dev.yml up [-d]
+   docker compose --env-file .env up [-d] [--build]
    ```
 
 7. migrate the database
@@ -27,4 +27,23 @@ cd /
 docker run --rm --env-file .env -v ./db/migration:/app/migration migration-manager1 migrate migration
 ```
 
-8.
+## Note on docker containers talking to each other
+
+Use `host.docker.internal` if you have containers that are deployed together and need to talk to each other.
+
+## Run node server not in docker container
+
+1. Install
+
+   ```sh
+   cd src
+   npm install
+   ```
+
+2. Make sure env is setup correctly create a symlink if needed. Use `localhost` instead of `host.docker.internal`.
+
+3. Start the Application
+
+   ```sh
+   npm start
+   ```
