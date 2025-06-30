@@ -3,6 +3,7 @@ const { joinVoiceChannel, createAudioPlayer, createAudioResource, AudioPlayerSta
 const { logAudioPlaySql } = require("../functions/logs/logAudioPlaySql.js");
 const { audioDict, recentlyPlayedList } = require("../data");
 const { PLAY_TYPE } = require("../enumerations/PlayType");
+const { ensureFileDownloaded, cleanupAudioCache } = require("../functions/initialization/audio");
 
 module.exports = {
   name: "p",
@@ -21,55 +22,67 @@ module.exports = {
    */
   execute({ message, args, audio, voiceChannel, discordId, playType }) {
     return new Promise(async (resolve, reject) => {
-      // Get discord id
-      let _discordId = discordId || message?.author?.id;
-
-      // Get playType Note playType = (0: p!, 1 : pr!, 2 : greeting!, 3 : raid!, 4 : farewell!)
-      let _playType = playType || PLAY_TYPE.PLAY;
-
-      // Getting file to play and checking that it exists
-      var _audio = audio || args?.[0];
-      if (!(_audio in audioDict)) return reject({ userMess: `"${_audio}" does not exist, ya dingus!` });
-
-      // Get voice channel and verify voice channel is actually a voice channel
-      var _voiceChannel = voiceChannel || message?.member?.voice?.channel;
-      if (!_voiceChannel) return reject({ userMess: "You are not in a voice channel, ya dingus!" });
-
-      // Join channel, play mp3 from the dictionary, leave when completed.
-      const player = createAudioPlayer();
-      const resource = createAudioResource(audioDict[_audio]);
-      const connection = joinVoiceChannel({
-        channelId: _voiceChannel.id,
-        guildId: _voiceChannel.guild.id,
-        adapterCreator: _voiceChannel.guild.voiceAdapterCreator,
-        selfDeaf: false,
-        selfMute: false,
-      });
-      connection.subscribe(player);
-      player.play(resource);
-      player.on(AudioPlayerStatus.Idle, () => {
-        connection.disconnect();
-      });
-
-      // On every play update the recently played list
-      recentlyPlayedList.pop();
-      recentlyPlayedList.unshift({
-        audio: _audio,
-        datetime: new Date(Date.now()),
-      });
-
-      // On every play log the play, use playType to log what type of play it was
       try {
-        await logAudioPlaySql(_discordId, _audio, _playType);
+        // Get discord id
+        let _discordId = discordId || message?.author?.id;
+
+        // Get playType Note playType = (0: p!, 1 : pr!, 2 : greeting!, 3 : raid!, 4 : farewell!)
+        let _playType = playType || PLAY_TYPE.PLAY;
+
+        // Getting file to play and checking that it exists
+        var _audio = audio || args?.[0];
+        if (!(_audio in audioDict)) return reject({ userMess: `"${_audio}" does not exist, ya dingus!` });
+
+        // Get voice channel and verify voice channel is actually a voice channel
+        var _voiceChannel = voiceChannel || message?.member?.voice?.channel;
+        if (!_voiceChannel) return reject({ userMess: "You are not in a voice channel, ya dingus!" });
+
+        // Ensure the file is downloaded before playing
+        const localFilePath = await ensureFileDownloaded(_audio);
+
+        // Join channel, play mp3 from the dictionary, leave when completed.
+        const player = createAudioPlayer();
+        const resource = createAudioResource(localFilePath);
+        const connection = joinVoiceChannel({
+          channelId: _voiceChannel.id,
+          guildId: _voiceChannel.guild.id,
+          adapterCreator: _voiceChannel.guild.voiceAdapterCreator,
+          selfDeaf: false,
+          selfMute: false,
+        });
+        connection.subscribe(player);
+        player.play(resource);
+        player.on(AudioPlayerStatus.Idle, async () => {
+          connection.disconnect();
+          // Cleanup cache after playing
+          await cleanupAudioCache();
+        });
+
+        // On every play update the recently played list
+        recentlyPlayedList.pop();
+        recentlyPlayedList.unshift({
+          audio: _audio,
+          datetime: new Date(Date.now()),
+        });
+
+        // On every play log the play, use playType to log what type of play it was
+        try {
+          await logAudioPlaySql(_discordId, _audio, _playType);
+        } catch (err) {
+          return reject({
+            userMess: "SUPPRESS_GENERAL_ERR_MESSAGE",
+            err: err,
+          });
+        }
+
+        // return resolve promise
+        return resolve();
       } catch (err) {
         return reject({
-          userMess: "SUPPRESS_GENERAL_ERR_MESSAGE",
+          userMess: "Failed to play audio file. Please try again.",
           err: err,
         });
       }
-
-      // return resolve promise
-      return resolve();
     });
   },
 };
