@@ -1,0 +1,21 @@
+services:
+  discord_bot:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: kevbot1_discord_bot
+    environment:
+      CLEAR_AUDIO_PRIOR_TO_DOWNLOAD: ${CLEAR_AUDIO_PRIOR_TO_DOWNLOAD}
+      COMMAND_PREFIX: ${COMMAND_PREFIX}
+      BOT_TOKEN: ${BOT_TOKEN}
+      KEVBOT_ENV: ${KEVBOT_ENV}
+      MASTER_DISCORD_ID: ${MASTER_DISCORD_ID}
+      GOOGLE_CLOUD_CREDENTIALS: ${GOOGLE_CLOUD_CREDENTIALS}
+      GOOGLE_CLOUD_BUCKET_NAME: ${GOOGLE_CLOUD_BUCKET_NAME}
+      GCP_API_ENDPOINT: ${GCP_API_ENDPOINT}
+      SQL_DB_DATABASE: ${SQL_DB_DATABASE}
+      SQL_DB_HOST: ${SQL_DB_HOST}
+      SQL_DB_PASSWORD: ${SQL_DB_PASSWORD}
+      SQL_DB_USER: ${SQL_DB_USER}
+      SQL_DB_PORT: ${SQL_DB_PORT}
+      SQL_DB_SSL_CA: ${SQL_DB_SSL_CA}
