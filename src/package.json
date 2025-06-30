@@ -32,6 +32,6 @@
     "get-audio-duration": "^4.0.1",
     "mysql2": "^3.14.1",
     "node-fetch": "^2.7.0",
-    "sodium": "^3.0.2"
+    "sodium-native": "^5.0.6"
   }
 }
