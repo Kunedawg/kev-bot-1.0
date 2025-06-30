@@ -4,13 +4,19 @@ const path = require("path");
 require("dotenv").config();
 
 // Google Cloud Bucket
-const audioBucket = new Storage({
-  projectId: JSON.parse(process.env.GOOGLE_CLOUD_CREDENTIALS).project_id,
-  credentials: JSON.parse(process.env.GOOGLE_CLOUD_CREDENTIALS),
-}).bucket(process.env.GOOGLE_CLOUD_BUCKET_NAME);
+const storageConfig = {};
+if (process.env.KEVBOT_ENV === "LOCAL_DEV") {
+  storageConfig.apiEndpoint = process.env.GCP_API_ENDPOINT;
+} else {
+  storageConfig.projectId = JSON.parse(process.env.GOOGLE_CLOUD_CREDENTIALS).project_id;
+  storageConfig.credentials = JSON.parse(process.env.GOOGLE_CLOUD_CREDENTIALS);
+}
+
+const audioBucket = new Storage(storageConfig).bucket(process.env.GOOGLE_CLOUD_BUCKET_NAME);
 
 // SQL Database
-const sqlDatabase = new SqlDatabase({
+
+const sqlDatabaseConfig = {
   connectionLimit: 10,
   host: process.env.SQL_DB_HOST,
   user: process.env.SQL_DB_USER,
@@ -19,10 +25,15 @@ const sqlDatabase = new SqlDatabase({
   port: process.env.SQL_DB_PORT,
   multipleStatements: true,
   dateStrings: true,
-  ssl: {
+};
+
+if (process.env.KEVBOT_ENV !== "LOCAL_DEV") {
+  sqlDatabaseConfig.ssl = {
     ca: process.env.SQL_DB_SSL_CA,
-  },
-});
+  };
+}
+
+const sqlDatabase = new SqlDatabase(sqlDatabaseConfig);
 
 // Data structures for use throughout code
 const audioDict = {}; // Audio dictionary, just maps names to filepaths. audioDict[name] -> filepath

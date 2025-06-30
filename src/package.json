@@ -4,7 +4,7 @@
   "description": "Custom discord bot for playing mp3 files and much more because I'm ballsy and I don't take no shit from anyone.",
   "main": "index.js",
   "engines": {
-    "node": "18.12.1"
+    "node": ">=20.17.0"
   },
   "scripts": {
     "start": "node index.js"
