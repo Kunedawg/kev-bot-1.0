@@ -1,0 +1,22 @@
+services:
+  db:
+    image: mysql:8.0.30
+    container_name: kevbot1_mysql_db
+    environment:
+      MYSQL_DATABASE: ${SQL_DB_DATABASE}
+      MYSQL_ROOT_USER: ${SQL_DB_USER}
+      MYSQL_ROOT_PASSWORD: ${SQL_DB_PASSWORD}
+      MYSQL_TCP_PORT: ${SQL_DB_PORT}
+    ports:
+      - ${SQL_DB_PORT}:${SQL_DB_PORT}
+    volumes:
+      - kevbot1_mysql_db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u$$MYSQL_ROOT_USER", "-p$$MYSQL_ROOT_PASSWORD"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+volumes:
+  kevbot1_mysql_db_data:

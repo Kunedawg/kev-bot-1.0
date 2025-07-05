@@ -36,35 +36,48 @@ async function compareSqlToGoogleBucket() {
 }
 
 /**
- * Determine files that have not been downloaded and download them
- * @param {any} googleFiles
+ * Store all of the file references in a dictionary without downloading
+ * @param {Array} googleFiles - List of files from Google Cloud Storage
  */
-async function downloadGoogleFiles(googleFiles) {
-  if (!googleFiles) {
-    const [googleFiles] = await audioBucket.getFiles();
-  }
-  let currentFiles = fs.readdirSync(audioPath);
-  const notDownloadedFiles = googleFiles.filter((file) => !currentFiles.includes(file.name));
-  if (notDownloadedFiles.length > 0) {
-    for (let [i, file] of notDownloadedFiles.entries()) {
-      console.log(`Downloading audio files from google cloud...[${i + 1}/${notDownloadedFiles.length}]`);
-      await file.download({ destination: path.join(audioPath, file.name) });
-    }
-    console.log("\nDownload of audio files complete!");
+async function initializeAudioDict(googleFiles) {
+  for (const file of googleFiles) {
+    const audio = file.name.split(".")[0];
+    // Store the Google Cloud Storage file reference instead of local path
+    audioDict[audio] = {
+      localPath: path.join(audioPath, file.name),
+      cloudFile: file,
+      isDownloaded: false,
+    };
   }
 }
 
 /**
- * Store all of the file paths in a dictionary
+ * Downloads a single file from Google Cloud Storage if not already downloaded
+ * @param {string} audioName - The name of the audio file to download
+ * @returns {Promise<string>} - The local path to the audio file
  */
-async function saveFilePaths() {
-  for (var f of fs.readdirSync(audioPath)) {
-    if (f.split(".")[1] === "mp3") {
-      let audio = f.split(".")[0];
-      let audioFilePath = path.join(audioPath, f);
-      audioDict[audio] = audioFilePath;
-    }
+async function ensureFileDownloaded(audioName) {
+  if (!audioDict[audioName]) {
+    throw new Error(`Audio file ${audioName} does not exist`);
   }
+
+  const fileInfo = audioDict[audioName];
+
+  // If already downloaded, return the local path
+  if (fileInfo.isDownloaded && fs.existsSync(fileInfo.localPath)) {
+    return fileInfo.localPath;
+  }
+
+  // Create audio directory if it doesn't exist
+  if (!fs.existsSync(audioPath)) {
+    fs.mkdirSync(audioPath, { recursive: true });
+  }
+
+  // Download the file
+  await fileInfo.cloudFile.download({ destination: fileInfo.localPath });
+  fileInfo.isDownloaded = true;
+
+  return fileInfo.localPath;
 }
 
 /**
@@ -90,17 +103,21 @@ async function compareAudioDictToGoogleList(googleAudioList) {
 }
 
 /**
- * Downloads from google cloud server, checks SQL server list, creates audioDict that does this mapping, yes -> ./audio/yes.mp3
- * @param {Boolean} freshDownload - Defaults to false. When set to true it will trigger the local audio folder to be purged
+ * Initializes the audio system without downloading files
+ * @param {Boolean} freshDownload - If true, clears the local audio cache
  */
 async function audio(freshDownload = false) {
   try {
     console.log("Audio initializing...");
     const [googleFiles, googleAudioList] = await compareSqlToGoogleBucket();
-    if (freshDownload) fs.emptyDirSync(audioPath);
-    await downloadGoogleFiles(googleFiles);
-    await saveFilePaths();
+
+    if (freshDownload) {
+      fs.emptyDirSync(audioPath);
+    }
+
+    await initializeAudioDict(googleFiles);
     await compareAudioDictToGoogleList(googleAudioList);
+
     console.log("Audio initializing...done!");
   } catch (err) {
     console.error("Audio initializing...failed!");
@@ -108,4 +125,46 @@ async function audio(freshDownload = false) {
   }
 }
 
-module.exports = { audio };
+/**
+ * Cleans up the local audio cache based on last access time
+ * @param {number} maxCacheSize - Maximum number of files to keep in cache
+ */
+async function cleanupAudioCache(maxCacheSize = 100) {
+  try {
+    // Get all downloaded files
+    const downloadedFiles = Object.entries(audioDict)
+      .filter(([_, info]) => info.isDownloaded)
+      .map(([name, info]) => ({
+        name,
+        path: info.localPath,
+        lastAccessed: fs.statSync(info.localPath).atimeMs,
+      }));
+
+    // If we're under the limit, no need to clean up
+    if (downloadedFiles.length <= maxCacheSize) {
+      return;
+    }
+
+    // Sort by last accessed time (oldest first)
+    downloadedFiles.sort((a, b) => a.lastAccessed - b.lastAccessed);
+
+    // Remove oldest files until we're at the limit
+    const filesToRemove = downloadedFiles.slice(0, downloadedFiles.length - maxCacheSize);
+
+    for (const file of filesToRemove) {
+      if (fs.existsSync(file.path)) {
+        fs.unlinkSync(file.path);
+        audioDict[file.name].isDownloaded = false;
+      }
+    }
+  } catch (err) {
+    console.error("Failed to cleanup audio cache:", err);
+  }
+}
+
+// Export the new function for use in other files
+module.exports = {
+  audio,
+  ensureFileDownloaded,
+  cleanupAudioCache,
+};

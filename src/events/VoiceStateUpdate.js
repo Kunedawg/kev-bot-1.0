@@ -78,17 +78,21 @@ module.exports = {
       );
 
       // User response
-      if (memberToMessage) {
-        if (err.userMess) {
-          if (err.userMess != "SUPPRESS_GENERAL_ERR_MESSAGE") {
-            memberToMessage.send(err.userMess);
-          }
-        } else {
-          if (commandAttempted) {
-            memberToMessage.send(`There was an issue executing command "${commandAttempted}"! Talk to Kevin.`);
+      if (memberToMessage && client.isReady()) {
+        try {
+          if (err.userMess) {
+            if (err.userMess != "SUPPRESS_GENERAL_ERR_MESSAGE") {
+              await memberToMessage.send(err.userMess);
+            }
           } else {
-            memberToMessage.send(`Something went wrong! Talk to Kevin.`);
+            if (commandAttempted) {
+              await memberToMessage.send(`There was an issue executing command "${commandAttempted}"! Talk to Kevin.`);
+            } else {
+              await memberToMessage.send(`Something went wrong! Talk to Kevin.`);
+            }
           }
+        } catch (dmError) {
+          console.error("Failed to send DM:", dmError);
         }
       }
     }

@@ -1,0 +1,6 @@
+version: "3.8"
+
+include:
+  - path: db/docker-compose.yml
+  - path: gcloud/docker-compose.yml
+  - path: src/docker-compose.yml
