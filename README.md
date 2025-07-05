@@ -7,24 +7,24 @@ kev-bot is a discord bot for playing custom audio clips. The bot utilizes the di
 - [kev-bot](#kev-bot)
 - [Table of contents](#table-of-contents)
 - [Commands](#commands)
-  - [Audio Commands](#audio-commands)
-  - [List Command](#list-command)
-  - [Greeting Commands](#greeting-commands)
-  - [Farewell Commands](#farewell-commands)
-  - [Upload Command](#upload-command)
-  - [Category Commands](#category-commands)
-  - [Help Command](#help-command)
+    - [Audio Commands](#audio-commands)
+    - [List Command](#list-command)
+    - [Greeting Commands](#greeting-commands)
+    - [Farewell Commands](#farewell-commands)
+    - [Upload Command](#upload-command)
+    - [Category Commands](#category-commands)
+    - [Help Command](#help-command)
 - [Code Architecture](#code-architecture)
-  - [Node, Discord.js, Discord API](#node-discordjs-discord-api)
-  - [Heroku](#heroku)
-  - [MySQL](#mysql)
-  - [Google Cloud Storage](#google-cloud-storage)
+    - [Node, Discord.js, Discord API](#node-discordjs-discord-api)
+    - [Heroku](#heroku)
+    - [MySQL](#mysql)
+    - [Google Cloud Storage](#google-cloud-storage)
 - [Release Notes](#release-notes)
-  - [v1.3.0](#v130)
-  - [v1.2.0](#v120)
-  - [v1.1.1](#v111)
-  - [v1.1.0](#v110)
-  - [v1.0.0](#v100)
+    - [v1.3.0](#v130)
+    - [v1.2.0](#v120)
+    - [v1.1.1](#v111)
+    - [v1.1.0](#v110)
+    - [v1.0.0](#v100)
 
 # Commands
 
@@ -206,7 +206,11 @@ A Google Cloud Storage bucket is used to store all the mp3 files. The bot downlo
 
 ### v1.3.0
 
-- Copied code from [KevBot 2.0 Repo](https://github.com/Kunedawg/KevBot)
+- Fixed production bot. It was becoming unavailable for some unknown reason.
+- Upgraded versions of node packages and heroku production.
+- Updated bot to only download audio on demand instead of startup. Caches locally.
+- Implemented docker compose for development environment.
+- Copied helpful development code from [KevBot 2.0 Repo](https://github.com/Kunedawg/KevBot)
   - `/db`
   - `/tools`
   - `/gcloud`

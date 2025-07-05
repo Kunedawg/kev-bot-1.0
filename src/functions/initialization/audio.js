@@ -129,7 +129,7 @@ async function audio(freshDownload = false) {
  * Cleans up the local audio cache based on last access time
  * @param {number} maxCacheSize - Maximum number of files to keep in cache
  */
-async function cleanupAudioCache(maxCacheSize = 50) {
+async function cleanupAudioCache(maxCacheSize = 100) {
   try {
     // Get all downloaded files
     const downloadedFiles = Object.entries(audioDict)
