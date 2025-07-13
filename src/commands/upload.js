@@ -137,7 +137,12 @@ module.exports = {
 
       // Upload file to google cloud server
       try {
-        await audioBucket.upload(filePath, { gzip: true });
+        await audioBucket.upload(filePath, {
+          resumable: false,
+          metadata: {
+            contentType: "audio/mpeg",
+          },
+        });
       } catch (err) {
         return reject({
           userMess: "The file failed to upload to the cloud server. Try again later.",

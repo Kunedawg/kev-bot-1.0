@@ -7,6 +7,7 @@ require("dotenv").config();
 const storageConfig = {};
 if (process.env.KEVBOT_ENV === "LOCAL_DEV") {
   storageConfig.apiEndpoint = process.env.GCP_API_ENDPOINT;
+  storageConfig.projectId = "kevbot-local-dev";
 } else {
   storageConfig.projectId = JSON.parse(process.env.GOOGLE_CLOUD_CREDENTIALS).project_id;
   storageConfig.credentials = JSON.parse(process.env.GOOGLE_CLOUD_CREDENTIALS);
