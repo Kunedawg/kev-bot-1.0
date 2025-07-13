@@ -20,6 +20,7 @@ kev-bot is a discord bot for playing custom audio clips. The bot utilizes the di
     - [MySQL](#mysql)
     - [Google Cloud Storage](#google-cloud-storage)
 - [Release Notes](#release-notes)
+    - [v1.3.2](#v132)
     - [v1.3.1](#v131)
     - [v1.3.0](#v130)
     - [v1.2.0](#v120)
@@ -204,6 +205,12 @@ The MySQL database stores a variety of permanent data that makes features like _
 A Google Cloud Storage bucket is used to store all the mp3 files. The bot downloads all of the files on startup of a new build.
 
 # Release Notes
+
+### v1.3.2
+
+- fixes
+  - fixed audio not being in a playable state after an upload
+  - fixed `setfarwell` command failing to retrieve audio
 
 ### v1.3.1
 
