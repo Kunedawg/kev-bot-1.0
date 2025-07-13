@@ -35,7 +35,7 @@ module.exports = {
       }
 
       // Send link to github
-      message.author.send("https://github.com/Kunedawg/kev-bot");
+      message.author.send("https://github.com/Kunedawg/kev-bot-1.0");
 
       // return promise
       return resolve({ userMess: response, wrapChar: "```" });
