@@ -37,7 +37,8 @@ if (process.env.KEVBOT_ENV !== "LOCAL_DEV") {
 const sqlDatabase = new SqlDatabase(sqlDatabaseConfig);
 
 // Data structures for use throughout code
-const audioDict = {}; // Audio dictionary, just maps names to filepaths. audioDict[name] -> filepath
+// TODO: audioDict should be private now, ensureFileIsDownloaded is the public api
+const audioDict = {}; // Audio dictionary, just maps names to filepaths. audioDict[name] -> {localPath: filepath, cloudPath: cloudPath, isDownloaded: boolean}
 const categoryDict = {}; // category dictionary, maps category names to sets of audio categoryDict[category_name] -> [audio1, audio2, audio3, ...]
 const categoryList = []; // Just a simple list of categories
 var mostPlayedList = []; // Most played list [{audio,playCount},{audio,playCount},..] (sorted by playCount)

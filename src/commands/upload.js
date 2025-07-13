@@ -152,7 +152,11 @@ module.exports = {
 
       // Add to audio dictionary and audio folder
       try {
-        audioDict[audioName] = filePath;
+        audioDict[audioName] = {
+          localPath: filePath,
+          cloudPath: `${audioName}.mp3`,
+          isDownloaded: true,
+        };
       } catch (err) {
         return reject({
           userMess: "File uploaded, but audio dictionary failed to update. Definitely let Kevin know!",

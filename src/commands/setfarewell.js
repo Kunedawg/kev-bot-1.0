@@ -1,6 +1,7 @@
 const { Message } = require("discord.js");
 const { getAudioDurationInSeconds } = require("get-audio-duration");
 const { audioDict, sqlDatabase } = require("../data");
+const { ensureFileDownloaded } = require("../functions/initialization/audio");
 
 module.exports = {
   name: "setfarewell",
@@ -27,7 +28,7 @@ module.exports = {
 
       // Check that the duration is less than the allowed amount
       const MAX_FAREWELL_CLIP_DURATION = 4; // sec
-      var duration = await getAudioDurationInSeconds(audioDict[farewell]);
+      var duration = await getAudioDurationInSeconds(await ensureFileDownloaded(farewell));
       if (duration >= MAX_FAREWELL_CLIP_DURATION) {
         return reject({
           userMess: `"${farewell}" has a duration of ${duration} sec. Max duration is ${MAX_FAREWELL_CLIP_DURATION} sec. Talk to Kevin for exceptions to this rule.`,
